@@ -81,13 +81,13 @@ Next I had to find a way to send the data from the Kafka Consumer to the newly c
 
 ```
         for message in batch_consumer:
-            fd, path = tempfile.mkstemp()
-            file_name = path [-11:]
+            consumer = tempfile.NamedTemporaryFile(mode ="w+")
+            file_name = consumer.name [-11:]
             try:
-                with os.fdopen(fd, 'w') as tmp:
-                    tmp.write(str(message))    
+                     json.dump(str(message),consumer)
+                     consumer.flush()    
             finally:
-                self.s3.meta.client.upload_file(path, str(self.bucket_name), f"file {file_name}")
+                self.s3.meta.client.upload_file(consumer.name, str(self.bucket_name), f"file {file_name}.json")
                 os.remove(path)
 ```
 Here is my final code for the Batch consumer pipeline:
@@ -118,14 +118,14 @@ class Batch():
 
             
         for message in batch_consumer:
-            fd, path = tempfile.mkstemp()
-            file_name = path [-11:]
+            consumer = tempfile.NamedTemporaryFile(mode ="w+")
+            file_name = consumer.name [-11:]
             try:
-                with os.fdopen(fd, 'w') as tmp:
-                    tmp.write(str(message))    
+                     json.dump(str(message),consumer)
+                     consumer.flush()    
             finally:
-                self.s3.meta.client.upload_file(path, str(self.bucket_name), f"file {file_name}")
-                os.remove(path)
+                self.s3.meta.client.upload_file(consumer.name, str(self.bucket_name), f"file {file_name}.json")
+                
 
     def s3_bucket(self):
         self.s3.create_bucket(Bucket=self.bucket_name,CreateBucketConfiguration={
@@ -138,4 +138,5 @@ def Batch_consumer_pp():
     
 if __name__ == "__main__":
     Batch_consumer_pp()
+
 ```
