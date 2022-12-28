@@ -169,8 +169,8 @@ In order for this to be fulfilled a spark configuration had to be created along 
         
         sc=SparkContext(conf=cfg)
         spark = SparkSession(sc).builder.appName("S3App").getOrCreate()
-        accessKeyID = "AKIA5L4Z425B5VVQJQEM"
-        secretAccessKey = "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"
+        accessKeyID = "A**********M"
+        secretAccessKey = "u****************Z"
         hadoopConf=sc._jsc.hadoopConfiguration()
         hadoopConf.set('fs.s3a.access.key', accessKeyID)
         hadoopConf.set('fs.s3a.secret.key', secretAccessKey)
@@ -301,8 +301,8 @@ class Batch():
         
         sc=SparkContext(conf=cfg)
         spark = SparkSession(sc).builder.appName("S3App").getOrCreate()
-        accessKeyID = "AKIA5L4Z425B5VVQJQEM"
-        secretAccessKey = "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"
+        accessKeyID = "A*************M"
+        secretAccessKey = "********"
         hadoopConf=sc._jsc.hadoopConfiguration()
         hadoopConf.set('fs.s3a.access.key', accessKeyID)
         hadoopConf.set('fs.s3a.secret.key', secretAccessKey)
