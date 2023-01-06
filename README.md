@@ -451,7 +451,7 @@ downloaded text,
 save_location text,
 title text,
 is_image_src text,
-is_image_or_video);
+is_image_or_video text);
 ```
 Now the Postgresql database is ready to connect to Spark.
 The code below shows how this works:
