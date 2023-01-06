@@ -480,3 +480,14 @@ The code below shows how this works:
             .awaitTermination()
 ```
 Here you can see that each micro-batch is appended to the SQL dataframe.
+
+
+This concludes the Pinterest Data Collection Project
+
+## Summary
+Over the course of this project I have learnt how to use several tools that a data engineer would regularly use. These include:
+- Apache Kafka
+- Apache Spark (Pyspark)
+- Apache Airflow
+- Postgresql
+- AWS S3
