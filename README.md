@@ -385,7 +385,7 @@ Similar to the Batch consumer pipeline, I needed to intergrate Kafka and Spark s
             .option("startingOffsets", "earliest") \
             .load() 
 ``` 
-## Milestone 9
+## Milestone 9 - Spark Streaming: Transformation
 In this Milestone I was required to apply transformations and computations to the streaming data. The computations I identified were the total sum of the followers in each micro-batch and the total number of followers per category. The cleaning transformation I carried was similar to the batch consumer pipeline, in that I created a structured dataframe for the value column of the kafka message. I then dropped all the null columns as well as replacing Error messages. Finally as we were doing arithmetic computations on the follower_count column I had to cast the column as an Integer. The code for this Milestone is shown below:
 
 ```
@@ -422,3 +422,61 @@ In this Milestone I was required to apply transformations and computations to th
             df.printSchema()
  ```
  
+## Milestone 10 - Spark Streaming: Load and Storage
+
+This Milestone required me to load the Spark DataFrame onto a Postgresql database. This was firstly done by creating a local database and table with the commands below:
+
+1) Run postgresql using this command
+```
+sudo -u postgres psql
+```
+2) Create the database 
+```
+CREATE DATABASE Pinterest_streaming;
+```
+3) Connect to the new database
+```
+\c Pinterest_streaming
+```
+4) create data table with the same columns as that of the Spark Dataframe
+```
+pinterest_streaming=# CREATE TABLE experimental_data(
+category text,
+index text,
+unique_id text,
+description text,
+follower_count int,
+tag_list text,
+downloaded text,
+save_location text,
+title text,
+is_image_src text,
+is_image_or_video);
+```
+Now the Postgresql database is ready to connect to Spark.
+The code below shows how this works:
+
+```
+        def config_micro_batch(df, epoch_id):
+            df.select(sum("follower_count")).show()
+            df.groupBy("category").sum("follower_count").show()
+            df.select(count(df.category)).show()
+            df.printSchema()
+            
+            df.write \
+                .mode("append") \
+                .format("jdbc") \
+                .option("driver","org.postgresql.Driver") \
+                .option("url", "jdbc:postgresql://localhost:5432/pinterest_streaming") \
+                .option("dbtable", "experimental_data") \
+                .option("user","postgres") \
+                .option("password", "265762") \
+                .save()
+            pass
+                            
+        df3.writeStream \
+            .foreachBatch(config_micro_batch) \
+            .start() \
+            .awaitTermination()
+```
+Here you can see that each micro-batch is appended to the SQL dataframe.
