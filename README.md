@@ -216,26 +216,33 @@ The final stage is to implement the changes that were suggested in Stage 1. The 
             .withColumn("image_src", regexp_replace("image_src","Image src error." , "N/A"))\
             .na.drop("all").show()
 ```
+Finally I loaded all the data from the Spark data frame onto a Postgresql database as shown below:
 
+```
+        df2.write \
+        .format("jdbc") \
+        .option("driver","org.postgresql.Driver") \
+        .option("url", "jdbc:postgresql://localhost:5432/pinterest_batch") \
+        .option("dbtable", "experimental_data") \
+        .option("user","postgres") \
+        .option("password", "265762") \
+        .save()
+```
 Here is a final update of what the Batch Consumer Pipeline looks like:
 
 ```
-import sys
-from kafka import KafkaConsumer
 from json import loads
-import multiprocessing
-import pyspark
+from kafka import KafkaConsumer
 from pyspark import SparkContext, SparkConf
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
-from functools import reduce
 import boto3
-import uuid
 import json
-import tempfile
 import os
-import time
+import tempfile
+import uuid
+
 
 class Batch():
     
@@ -343,6 +350,15 @@ class Batch():
             .withColumn("description", regexp_replace("description","No description available Story format" , "N/A"))\
             .withColumn("image_src", regexp_replace("image_src","Image src error." , "N/A"))\
             .na.drop("all").show()
+            
+        df2.write \
+        .format("jdbc") \
+        .option("driver","org.postgresql.Driver") \
+        .option("url", "jdbc:postgresql://localhost:5432/pinterest_batch") \
+        .option("dbtable", "experimental_data") \
+        .option("user","postgres") \
+        .option("password", "265762") \
+        .save()
         
     def delete_bucket(self):
         bucket_name =  self.bucket_name
