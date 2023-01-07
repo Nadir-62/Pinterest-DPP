@@ -228,7 +228,7 @@ Finally I loaded all the data from the Spark data frame onto a Postgresql databa
         .option("password", "265762") \
         .save()
 ```
-Here is a final update of what the Batch Consumer Pipeline looks like:
+### Batch Pipeline full code
 
 ```
 from json import loads
@@ -497,7 +497,7 @@ The code below shows how this works:
 ```
 Here you can see that each micro-batch is appended to the SQL dataframe.
 
-# Streaming pipeline full code
+### Streaming pipeline full code
 
 ```
 from json import loads
